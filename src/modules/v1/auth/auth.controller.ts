@@ -51,7 +51,7 @@ export async function login(context: LoginContext) {
         });
     }
 
-    const token = await (context as any).jwtPlugin.sign({
+    const token = await (context as any).jwt.sign({
         id: existingUser.id,
     });
 
@@ -69,24 +69,22 @@ export async function login(context: LoginContext) {
 export async function signup(context: SignUpContext) {
     try {
         const { body } = context;
-
         body.password = await Bun.password.hash(body.password);
 
         const existingUser = (
             await db
                 .select({
-                    email: users.email,
-                    phone: users.phone,
+                    email: users.email
                 })
                 .from(users)
                 .where(
                     or(
-                        eq(users.email, body.email),
-                        eq(users.phone, body.phone),
+                        eq(users.email, body.email)
                     ),
                 )
         )[0];
 
+        
         if (existingUser) {
             let errorMessage = '';
             if (existingUser.email === body.email) {
@@ -101,10 +99,12 @@ export async function signup(context: SignUpContext) {
             });
         }
 
+        console.log('body', body);
         const insertedUser = await db.insert(users).values(body).returning();
 
         return insertedUser.at(0);
     } catch (error) {
+        console.log('error', error);
         return new ApiResponse(context.set).error({
             code: 500,
             message: 'Internal Server Error',

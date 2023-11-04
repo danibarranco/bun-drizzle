@@ -1,11 +1,11 @@
 import type { Config } from 'drizzle-kit';
 
 export default {
-    schema: './src/db/schema',
     driver: 'pg',
+    schema: './src/db/schema',
+    schemaFilter: ["public", "auth"],
     dbCredentials: {
-        connectionString:
-            'postgres://bhumit070:bhumit070@localhost:5432/bun_demo',
+        connectionString: process.env.DATABASE_URL || 'undefined',
     },
     out: './migrations',
 } satisfies Config;

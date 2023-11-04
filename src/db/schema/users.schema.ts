@@ -1,10 +1,13 @@
-import { pgTable, serial, text, timestamp, varchar } from 'drizzle-orm/pg-core';
+import { pgTable, pgSchema, serial, text, timestamp, varchar } from 'drizzle-orm/pg-core';
 import { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 
-export const users = pgTable('users', {
+export const mySchema = pgSchema("auth")
+
+export const users = mySchema.table('users', {
     id: serial('id').primaryKey(),
-    fullName: text('full_name').notNull(),
-    phone: varchar('phone', { length: 20 }).notNull().unique(),
+    name: varchar('name', { length: 100 }),
+    lastName: varchar('last_name', { length: 100 }),
+    phone: varchar('phone', { length: 20 }).unique(),
     email: text('email').notNull().unique(),
     password: text('password').notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),

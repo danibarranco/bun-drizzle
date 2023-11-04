@@ -1,19 +1,17 @@
-import Elysia, { t } from 'elysia';
+import Elysia from 'elysia';
 import { login, signup } from './auth.controller';
 import {
     LoginValidationSchema,
     SignUpValidationSchema,
 } from './auth.validator';
-import { server } from '../../..';
 
-export function InitV1AuthRoutes(elysiaServer: typeof server) {
-    elysiaServer.group('/auth', (app) => {
-        app.post('/login', login, {
+export const InitV1AuthRoutes = (server: Elysia) =>
+    server.group('/auth', (server) => 
+        server.post('/login', login, {
             body: LoginValidationSchema,
-        });
-        app.post('/signup', signup, {
+        })
+        .post('/signup', signup, {
             body: SignUpValidationSchema,
-        });
-        return app;
-    });
-}
+        })
+    );
+

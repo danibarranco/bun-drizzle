@@ -1,16 +1,17 @@
 //import './db/index';
 import { Elysia } from 'elysia';
-import { initRoutes } from './modules';
+import { RoutesProvider } from './modules';
 import { swagger } from '@elysiajs/swagger';
 import { jwt } from '@elysiajs/jwt';
 
 export const server = new Elysia()
     .use(
         jwt({
-            name: 'jwtPlugin',
-            secret: process.env.JWT_SECRET! || 'secret',
+            name: 'jwt',
+            secret: Bun.env.JWT_SECRET as string,
         }),
     )
+    .use(RoutesProvider)
     .use(
         swagger({
             documentation: {
@@ -25,7 +26,7 @@ export const server = new Elysia()
                         description: 'Local Server',
                         variables: {
                             port: {
-                                default: '3000',
+                                default: Bun.env.PORT || '3000',
                             },
                         },
                     },
@@ -34,17 +35,18 @@ export const server = new Elysia()
         }) as any,
     );
 
-initRoutes(server);
+const PORT = Bun.env.PORT || 3000;
 
-const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
     console.log('-'.repeat(50));
+
     server.routes.forEach((route) => {
+        console.log(`${route.method} ${route.path}`);
         if (route.path.includes('swagger') || route.path === '/*') {
             return;
         }
-        console.log(`${route.method} ${route.path}`);
     });
+
     console.log('-'.repeat(50));
 
     console.log(`Server is running on port ${PORT} 🚀`);
