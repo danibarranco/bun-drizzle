@@ -7,7 +7,7 @@ bun install
 
 First setup on dev environment:
 
-1. Generate your .env file following the .env.example file provided
+1. Generate your .env.local file following the .env.example file provided
 2. Create your pgsql db for run the project
 3. Run migrations with:
 ```bash
